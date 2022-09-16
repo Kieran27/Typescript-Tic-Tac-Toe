@@ -1,12 +1,17 @@
 import React from "react";
 
-const GameInfo = () => {
+interface Props {
+  currentPlayer: string;
+  turns: number;
+}
+
+const GameInfo = ({ currentPlayer, turns }: Props) => {
   return (
     <div>
       <h2 className="text-center text-2xl font-bold">Tic Tac Toe</h2>
       <div className="flex justify-between px-9 mb-3">
-        <span>Player:</span>
-        <span>Turns:</span>
+        <span>{`Player: ${currentPlayer}`}</span>
+        <span>{`Turns: ${turns}`}</span>
       </div>
     </div>
   );

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import Square from "./Square";
 import GameInfo from "./gameInfo";
+import WinnerMessage from "./winnerMessage";
 
 const Game = () => {
   const [currentPlayer, setCurrentPlayer] = useState<string>("X");
   const [turns, setTurns] = useState<number>(0);
   const [gameboard, setGameboard] = useState<string[]>([]);
+  const [winner, setWinner] = useState<boolean>(false);
 
   const takeTurn: (index: number) => void = (index: number) => {
     const gameboardCopy: string[] = [...gameboard];
@@ -13,6 +15,7 @@ const Game = () => {
     setGameboard(gameboardCopy);
     changeCurrentPlayer();
     changeTurns();
+    checkForWinner(gameboard);
   };
 
   const changeTurns: () => void = () => {
@@ -25,6 +28,31 @@ const Game = () => {
     } else {
       setCurrentPlayer("X");
     }
+  };
+
+  const checkForWinner = (gameboard: string[]) => {
+    const lines: number[][] = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (
+        gameboard[a] !== "" &&
+        gameboard[a] === gameboard[b] &&
+        gameboard[a] === gameboard[c]
+      ) {
+        setWinner(true);
+        return gameboard[a];
+      }
+    }
+    return null;
   };
 
   useEffect(() => {
@@ -47,10 +75,12 @@ const Game = () => {
                 index={index}
                 square={gameboard[index]}
                 takeTurn={takeTurn}
+                winner={winner}
               />
             );
           })}
         </div>
+        {winner && <WinnerMessage currentPlayer={currentPlayer} />}
       </div>
     </>
   );
